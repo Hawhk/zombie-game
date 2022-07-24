@@ -4,7 +4,6 @@ class Player extends MovingObject {
         let h = 15
         let s = 0.1
         super(px, py, w, h, 0, 0, s);
-        this.imgDirH = IMG_NORMAL
 
         this.hp = 10; // player health
         this.ammo = 20; // player ammo

@@ -1,40 +1,52 @@
 
-class Game {
+class Game extends StillObject {
     constructor () {
-        let ds = this.getFireSize();
-        let ds_w = ds.w * 2;
-        let ds_h = ds.h * 2;
-        let pX = random(ds_w, width - ds_w);
-        let pY = random(ds_h, height - ds_h);
+        super(width/2, height/2, 1, 1);
+        let {w, h} = this.getFireSize();
+        w *= 2;
+        h *= 2;
+        let pX = random(w, width - w);
+        let pY = random(h, height - h);
         this.player = new Player(pX, pY);
         this.zombies = [];
 
         this.round = 0;
+        this.lost = false;
 
-        for (let i = 0; i < 10; i++) {
-            let zX = random(ds_w, width - ds_w);
-            let zY = random(ds_h, height - ds_h);
+        this.nextRound();
+
+        this.drops = [];
+        let s = 5;
+        this.dropTime = 1000 * s/this.nrOfZombies;
+        Ammo.game = this;
+        Ammo.setTimmer();
+    }
+
+    nextRound () {
+        this.round++;
+        let nrOfZombies = fib(this.round);
+        let {w, h} = this.getFireSize();
+        w *= 2;
+        h *= 2;
+        for (let i = 0; i < nrOfZombies; i++) {
+            let zX = random(w, width - w);
+            let zY = random(h, height - h);
             let zS = random(0.05, 0.09);
             this.zombies.push(new Zombie(zX, zY, zS, i));
         }
-        this.lost = false;
-    }
-
-    show () {
-        fill(0, 150);
-        let ds = this.getFireSize();
-        let ds_w = ds.w * 4;
-        let ds_h = ds.h * 4;
-        rect(width/2, height/2, width-ds.w*2, height-ds.h*2);
-        fill(255, 100)
-        rect(width/2, height/2, width-ds_w, height-ds_h);
-        
+        Game.sounds['lvl.mp3'].play();
+        this.nrOfZombies = nrOfZombies;
     }
 
     update () {
         this.show();
         if (!this.lost) {
+            this.drops.forEach(drop => {
+                drop.update(this.player);
+            });
+
             this.player.update(this.getFireSize(), this.zombies);
+            
             this.zombies.forEach(zombie => {
                 zombie.move(this.player);
             });
@@ -42,16 +54,44 @@ class Game {
             this.zombies.forEach(zombie => {
                 zombie.show(this.player);
             });
+
             this.player.show();
+            this.playerStats();
             this.lost = this.player.hp <= 0;
+
+            if (this.zombies.length === 0) {
+                this.nextRound();
+            }
         } else {
-            push();
-            fill("DARKRED");
-            textSize(width/20);
-            textStyle(BOLD);
-            text(`You died with ${this.player.kills} kill(s) on round ${this.round + 1}` , width/2, height/2);
-            pop();
+            this.loseText();
+            Ammo.clearTimmer();
         }
+    }
+
+    loseText () {
+        push();
+        fill("DARKRED");
+        textSize(width/20);
+        textStyle(BOLD);
+        text(`You died with ${this.player.kills} kill(s) on round ${this.round}` , width/2, height/2);
+        pop();
+    }
+
+    playerStats () {
+        push();
+        textSize(22);
+        textStyle(BOLD);
+        fill("Gold");
+        if (this.player.ammo > 0) {
+            text(this.player.ammo, 30, height - 20);
+        } else {
+            text("No ammo", 50, height - 20);
+        }
+        fill("red");
+        text(this.player.hp, 30, 30);
+        fill(0);
+        text(this.round, width - 30, height - 20);
+        pop()
     }
 
     getFireSize () {
@@ -61,35 +101,23 @@ class Game {
         }
     }
 
-    static loadTextures (obj) {
-        let textures = obj.textures
-        Object.keys(textures).forEach(key => {
-            textures[key] = loadImage(PIC_DIR + key);
-        });
-    }
-
     static loadAllTextures () {
-        this.loadTextures(this);
+        this.loadTextures();
         Player.loadTextures();
         Zombie.loadTextures();
         Bullet.loadTextures();
-    }
-
-    static loadSounds (obj) {
-        let sounds = obj.sounds
-        Object.keys(sounds).forEach(key => {
-            sounds[key] = loadSound(SND_DIR + key);
-            sounds[key].setVolume(VOLUME);
-        });
+        Ammo.loadTextures();
     }
 
     static loadAllSounds () {
-        this.loadSounds(this);
+        this.loadSounds();
+        Game.sounds['lvl.mp3'].setVolume(VOLUME * 3);
         Player.loadSounds();
         Player.sounds['oof.mp3'].setVolume(VOLUME * 3);
         // Zombie.loadSounds();
         Bullet.loadSounds();
+        Ammo.loadSounds();
     }
 }
-Game.textures = {'grass.jpg':null};
+Game.textures = {'game.png':null};
 Game.sounds = {'lvl.mp3':null};

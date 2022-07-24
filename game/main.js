@@ -1,24 +1,16 @@
 let game;
 
 const FPS = 30;
-const RATIO = 9/16;
 
 const ASSET_DIR = 'assets/';
 const PIC_DIR = ASSET_DIR + 'pic/';
 const SND_DIR = ASSET_DIR + 'sounds/';
-
 const VOLUME = 0.3;
 
 function preload(){
     Game.loadAllTextures();
     soundFormats('mp3', 'ogg');
     Game.loadAllSounds();
-    // oof = loadSound(SOUND_DIR + 'oof.mp3');
-    // shot = loadSound(SOUND_DIR + 'shot.mp3');
-    // ammo_mp3 = loadSound(SOUND_DIR + 'ammo.mp3');
-    // level_mp3 = loadSound(SOUND_DIR + 'lvl.mp3');
-    // heal = loadSound(SOUND_DIR + 'heal.mp3');
-    // noAmmo = loadSound(SOUND_DIR + 'noAmmo.mp3');
 }
 
 function setup() {
@@ -35,13 +27,6 @@ function setup() {
 } 
 
 function draw() {
-    image(
-        Game.textures['grass.jpg'], 
-        width / 2, 
-        height / 2, 
-        width, 
-        height
-    );
     game.update();
 }
 
@@ -61,14 +46,26 @@ function getSize() {
     return { w, h };
 }
 
+
+function fib(nr){
+    if (nr <= 1) {
+        return nr;
+    }
+    return fib(
+        nr - 1
+    ) + fib(
+        nr - 2
+    );
+}
+
 function keyPressed() {
-    if (keyCode === 87) {
+    if (key === 'w') {
         game.player.shoot(0, -1); // up
-    }else if (keyCode === 83) {
+    }else if (key === 's') {
         game.player.shoot(0, 1); // down
-    } else if (keyCode === 65) {
+    } else if (key === 'a') {
         game.player.shoot(-1, 0); // left
-    } else if (keyCode === 68) {
+    } else if (key === 'd') {
         game.player.shoot(1, 0); // right
     }
 
