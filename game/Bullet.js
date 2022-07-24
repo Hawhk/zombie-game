@@ -4,14 +4,23 @@ class Bullet extends MovingObject {
         let h = 100;
         super(x, y, w, h, dirX, dirY, 1);
         this.dmg = 1;
+        this.sound();
     }
 
     update() {
         this.move();
         this.show();
     }
-}
 
+    sound () {
+        let s = Bullet.sounds['shot.mp3'];
+        s.setVolume(VOLUME);
+        s.play();
+    }  
+}
 Bullet.textures = {
     'bullet.png':null
+};
+Bullet.sounds = {
+    'shot.mp3':null
 };

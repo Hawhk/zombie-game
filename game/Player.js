@@ -6,8 +6,9 @@ class Player extends MovingObject {
         super(px, py, w, h, 0, 0, s);
         this.imgDirH = IMG_NORMAL
 
-        this.hp = 5; // player health
-        this.ammo = 100; // player ammo
+        this.hp = 10; // player health
+        this.ammo = 20; // player ammo
+        this.kills = 0; // player kills
 
         this.bullets = []; // player bullets
     }
@@ -33,42 +34,58 @@ class Player extends MovingObject {
         if (this.ammo > 0) {
             this.ammo--;
             let {x, y} = this.getPos();
-
             this.bullets.push(new Bullet(x, y, dirX, dirY));
-
-            if (dirX === IMG_NEGATIVE) {
-                this.imgDirH = IMG_NEGATIVE;
-            } else if (dirX === IMG_NORMAL) {
-                this.imgDirH = IMG_NORMAL;
-            }
         } else {    
-            console.log('no ammo');
+            this.noAmmo();
         }
+        if (dirX === IMG_NEGATIVE) {
+            this.imgDirH = IMG_NEGATIVE;
+        } else if (dirX === IMG_NORMAL) {
+            this.imgDirH = IMG_NORMAL;
+        }
+    }
+
+    noAmmo () {
+        if (!Player.sounds['noAmmo.mp3'].isPlaying()) {
+            Player.sounds['noAmmo.mp3'].play();
+        }
+    }
+
+    takeDamage(dmg) {
+        Player.sounds['oof.mp3'].play();
+        this.hp -= dmg;
     }
 
     update (fire, zombies) {
         this.checkFire(fire);
         this.move();
+        this.checkBulltes(zombies);
+    }
+
+    checkBulltes (zombies) {
         for (let i = this.bullets.length - 1; i >= 0; i--) {
             let bullet = this.bullets[i];
             bullet.update();
             let bPos = bullet.getPos();
             let bDim = bullet.getDim();
-            let hit = false;
+            let hits = 0;
+            let kills = 0;
             for (let j = zombies.length - 1; j >= 0; j--) {
                 let zombie = zombies[j];
                 let zPos = zombie.getPos();
                 let zDim = zombie.getDim();
                 if (rectColide(bPos, bDim, zPos, zDim)) {
-                    console.log('hit');
-                    hit = true;
+                    hits++;
                     zombie.hp -= bullet.dmg;
                     if (zombie.hp <= 0) {
+                        kills++;
+                        this.kills++;
                         zombies.splice(j, 1);
                     }
                 }
             }
-            if (bPos.x > width || bPos.x < 0 || bPos.y > height || bPos.y < 0 || hit) {
+            if (bPos.x > width || bPos.x < 0 || bPos.y > height || bPos.y < 0 || hits > 0) {
+                console.log(`hit: ${hits} and killed: ${kills} zombies`);
                 this.bullets.splice(i, 1);
             }
         }
@@ -79,7 +96,7 @@ class Player extends MovingObject {
         let {w, h} = this.getDim();
         w /= 2;
         h /= 2;
-        let dmg = 10
+        let dmg = 1;
         let knockDist = 10;
         let xmw = x - w < dmgSize.w;
         let xpw = x + w > width - dmgSize.w;
@@ -101,7 +118,6 @@ class Player extends MovingObject {
             ) {
                 this.knockbackDamage(dmg, knockDist);
             } else {
-                console.log('ouch');
                 this.knockbackDamage(dmg, knockDist, createVector(width/2 - x, height/2 - y));
             }
 
@@ -121,7 +137,7 @@ class Player extends MovingObject {
     }
 
     knockbackDamage(dmg, dist, knockDir=null) { // knockback player and damage him
-        this.hp -= dmg;
+        this.takeDamage(dmg);
         this.knockback(dist, knockDir);
     }
 }
@@ -130,4 +146,9 @@ Player.textures = {
     'ammo.png':null,
     'health.png':null,
     'bullet.png':null
+};
+Player.sounds = {
+    'oof.mp3':null,
+    'heal.mp3':null,
+    'noAmmo.mp3':null,
 };

@@ -54,6 +54,7 @@ class MovingObject {
         translate(x, y);
         rotate(a);
     }
+    
     move () {
         this.percentagePos.add(
             this.dir.copy().mult(
@@ -79,5 +80,9 @@ class MovingObject {
 
     static loadTextures () {
         Game.loadTextures(this);
+    }
+
+    static loadSounds () {
+        Game.loadSounds(this);
     }
 }

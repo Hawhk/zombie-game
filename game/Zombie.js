@@ -10,18 +10,10 @@ class Zombie extends MovingObject {
     }
 
     show(player) {
-        fill(255, 0, 0);
-        let {x, y} = this.getPos();
-        let {w, h} = this.getDim();
-
-        if (player.getPos().x < x) {
-            push();
-            scale(-1, 1)
-            image(Zombie.textures['zombie.png'], -x, y, w, h);
-            pop();
-        } else {
-            image(Zombie.textures['zombie.png'], x, y, w, h);
-        }
+        let {x} = this.getPos();
+        let {x:pX} = player.getPos();
+        this.imgDirH = (x > pX) ? IMG_NEGATIVE : IMG_NORMAL;
+        this.showImg();
     }
 
     move (player) {

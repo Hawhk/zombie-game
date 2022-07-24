@@ -2,14 +2,17 @@ let game;
 
 const FPS = 30;
 const RATIO = 9/16;
+
 const ASSET_DIR = 'assets/';
 const PIC_DIR = ASSET_DIR + 'pic/';
-const SOUND_DIR = ASSET_DIR + 'sounds/';
+const SND_DIR = ASSET_DIR + 'sounds/';
+
+const VOLUME = 0.3;
 
 function preload(){
     Game.loadAllTextures();
-
-    // soundFormats('mp3', 'ogg');
+    soundFormats('mp3', 'ogg');
+    Game.loadAllSounds();
     // oof = loadSound(SOUND_DIR + 'oof.mp3');
     // shot = loadSound(SOUND_DIR + 'shot.mp3');
     // ammo_mp3 = loadSound(SOUND_DIR + 'ammo.mp3');
@@ -25,7 +28,7 @@ function setup() {
 
     imageMode(CENTER);
     rectMode(CENTER);
-    textAlign(CENTER);
+    textAlign(CENTER, CENTER);
     angleMode(DEGREES);
 
     game = new Game();
@@ -104,7 +107,7 @@ function isRectColiding(rects) {
             let r2 = rects[j];
             let r2Pos = r2.getPos();
             let r2Dim = r2.getDim();
-            if (rectColide(r1Pos, r2Pos, r1Dim, r2Dim)) {
+            if (rectColide(r1Pos, r1Dim, r2Pos, r2Dim)) {
                 return true;
             }
         }
