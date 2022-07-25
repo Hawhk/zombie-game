@@ -25,7 +25,6 @@ class Drop extends StillObject {
     static newDrop() {
         let {w, h} = this.getDimensions();
         let {w:w1, h:h1} = this.percentageDimentions;
-        console.log(w, h);
         return new this(
             random(this.game.getFireSize().w + w, width - this.game.getFireSize().w - w),
             random(this.game.getFireSize().h + h, height - this.game.getFireSize().h - h),
@@ -45,15 +44,18 @@ class Drop extends StillObject {
 
     static setTimmer () {
         let mult = random(this.timeMultipliers.min, this.timeMultipliers.max);
-        let time = this.game.dropTime * mult;
-        this.timmer = setTimeout(() => {
+        let time = this.game.getDropTime() * mult;
+        console.log(time);
+        this.timer = new Timer(() => {
+            console.log("hmm");
             this.game.drops.push(this.newDrop());
             this.setTimmer();
         }, time);
     }
 
     static clearTimmer () {
-        clearTimeout(this.timmer);
+        this.timer.pause();
+        this.timer = null;
     }
 }
 Drop.percentageDimentions = {w: 80, h: 80*RATIO}; 

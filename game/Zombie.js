@@ -36,8 +36,6 @@ class Zombie extends MovingObject {
         this.hit(player);
     }
 
-    
-
     hit (player) {
 
         let zPos = this.getPos();
@@ -54,6 +52,7 @@ class Zombie extends MovingObject {
             player.knockbackDamage(
                 this.dmg, this.knockDist, knockDir
             );
+            this.hp--;
         }
     }
 

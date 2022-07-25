@@ -9,20 +9,21 @@ class Game extends StillObject {
         let pY = random(h, height - h);
         this.player = new Player(pX, pY);
         this.zombies = [];
+        this.nrOfZombies = 1;
 
         this.round = 0;
         this.lost = false;
-
-        this.nextRound();
+        this.paused = false;
 
         this.drops = [];
-        let s = 60;
-        this.dropTime = 1000 * s/this.nrOfZombies;
-        let drops = [Ammo];
-        drops.forEach(drop => {
+        this.dropsAvailable = [Ammo];
+
+        this.dropsAvailable.forEach(drop => {
             drop.game = this;
             drop.setTimmer();
         });
+        this.timer = null;
+        this.nextRound();
     }
 
     nextRound () {
@@ -39,11 +40,21 @@ class Game extends StillObject {
         }
         Game.playSound();
         this.nrOfZombies = nrOfZombies;
+        this.addRandomDrop();
     }
 
     update () {
         this.show();
-        if (!this.lost) {
+        if (!this.lost && focused) {
+            if (this.paused) {
+                this.paused = false;
+                this.dropsAvailable.forEach(drop => {
+                    drop.timer.resume();
+                });
+                if (this.timer) {
+                    this.timer.resume();
+                }
+            }
             this.drops.forEach(drop => {
                 drop.update(this.player);
             });
@@ -57,18 +68,48 @@ class Game extends StillObject {
             this.zombies.forEach(zombie => {
                 zombie.show(this.player);
             });
+            this.zombieCheckRemove();
 
             this.player.show();
             this.playerStats();
             this.lost = this.player.hp <= 0;
 
-            if (this.zombies.length === 0) {
-                this.nextRound();
+            if (this.zombies.length === 0 && this.timer === null) {
+                this.timer = new Timer(() => {
+                    this.nextRound();
+                    this.timer = null;
+                }, 5000);
+            }
+        } else if (!focused) {
+            if (!this.paused) {
+                this.paused = true;
+                this.dropsAvailable.forEach(drop => {
+                    drop.timer.pause();
+                });
+                if (this.timer) {
+                    this.timer.pause();
+                }
             }
         } else {
             this.loseText();
-            Ammo.clearTimmer();
+            this.dropsAvailable.forEach(drop => {
+                drop.clearTimmer();
+            });
         }
+    }
+
+    addRandomDrop () {
+        this.drops.push((random(this.dropsAvailable)).newDrop());
+    }
+
+    zombieCheckRemove () {
+        this.zombies = this.zombies.filter(zombie => {
+            if (zombie.hp <= 0) {
+                this.player.kills++;
+                return false;
+            }
+            return true;
+        });
     }
 
     loseText () {
@@ -104,6 +145,15 @@ class Game extends StillObject {
         }
     }
 
+    getDropTime () {
+        let sekunds = 60;
+        let milis = 1000;
+        if (this.player.kills === 0) {
+            return sekunds * milis;
+        }
+        return milis * sekunds/(this.player.kills/40);
+    }
+
     static loadAllTextures () {
         this.loadTextures();
         Player.loadTextures();
@@ -122,4 +172,3 @@ class Game extends StillObject {
 }
 Game.textures = {'game.png':null};
 Game.sounds = {'lvl.mp3':{sound:null, volume:VOLUME*3}};
-console.log(Game.sounds);

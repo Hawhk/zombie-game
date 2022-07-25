@@ -25,7 +25,6 @@ class StillObject {
     showImg () {
         let {w, h} = this.getDim();
         let {x, y} = this.getPos();
-        // console.log(w,h);
         let obj = this.constructor;
         let img = obj.name.toLowerCase()+".png";
         if (this.imgDirH === IMG_NEGATIVE) {
@@ -34,9 +33,6 @@ class StillObject {
             image(obj.textures[img], -x, y, w, h);
             pop();
         } else if (this.imgDirH === IMG_NORMAL) {
-            if (img === 'ammo.png') {
-                console.log(w, h);
-            }
             image(obj.textures[img], x, y, w, h);
         }
         if (this.imgDirV === IMG_NEGATIVE || this.imgDirV === IMG_NORMAL) { 

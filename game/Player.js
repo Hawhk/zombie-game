@@ -6,7 +6,7 @@ class Player extends MovingObject {
         super(px, py, w, h, 0, 0, s);
 
         this.hp = 10; // player health
-        this.ammo = 20; // player ammo
+        this.ammo = 50; // player ammo
         this.kills = 0; // player kills
 
         this.bullets = []; // player bullets
@@ -76,15 +76,15 @@ class Player extends MovingObject {
                 if (rectColide(bPos, bDim, zPos, zDim)) {
                     hits++;
                     zombie.hp -= bullet.dmg;
-                    if (zombie.hp <= 0) {
-                        kills++;
-                        this.kills++;
-                        zombies.splice(j, 1);
-                    }
                 }
             }
-            if (bPos.x > width || bPos.x < 0 || bPos.y > height || bPos.y < 0 || hits > 0) {
-                console.log(`hit: ${hits} and killed: ${kills} zombies`);
+            if (
+                bPos.x > width || 
+                bPos.x < 0 || 
+                bPos.y > height || 
+                bPos.y < 0 || 
+                hits > 0
+            ) {
                 this.bullets.splice(i, 1);
             }
         }
@@ -108,7 +108,6 @@ class Player extends MovingObject {
             let xp = mouseX > width - dmgSize.w && !(xmw || yph || ymh);
             let ym = mouseY < dmgSize.h && !(yph || xmw || xpw);
             let yp = mouseY > height - dmgSize.h && !(ymh || xmw || xpw);
-            // console.log(xm, xp, ym, yp);
             if (
                 (mouseX < x - w && xm) ||
                 (mouseX > x + w && xp) ||

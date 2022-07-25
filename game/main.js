@@ -45,16 +45,13 @@ function getSize() {
     return { w, h };
 }
 
+let fibNums = [0,1];
 
 function fib(nr){
-    if (nr <= 1) {
-        return nr;
+    if (fibNums[nr] === undefined) {
+        fibNums[nr] = fib(nr-1) + fib(nr-2);
     }
-    return fib(
-        nr - 1
-    ) + fib(
-        nr - 2
-    );
+    return fibNums[nr];
 }
 
 function keyPressed() {
@@ -67,19 +64,6 @@ function keyPressed() {
     } else if (key === 'd') {
         game.player.shoot(1, 0); // right
     }
-
-  
-    // if (player.ammo > 0 && player.life > 0) {
-    //   if (keyCode === 38) {//upp
-    //     player.shoot(1, 0, -1);
-    //   }else if (keyCode === 40) {//ner
-    //     player.shoot(1, 0, 1);
-    //   }else if (keyCode === 37) { //vänsater
-    //     player.shoot(1, -1, 0);
-    //   }else if (keyCode === 39) {
-    //     player.shoot(1, 1, 0);
-    //   }
-    // }
   }
 
 function rectColide(r1Pos, r1Dim, r2Pos, r2Dim) {
@@ -108,4 +92,5 @@ function isRectColiding(rects) {
             }
         }
     }
+    return false;
 }
