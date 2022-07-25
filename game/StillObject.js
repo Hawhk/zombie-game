@@ -1,5 +1,6 @@
 const IMG_NORMAL = 1;
 const IMG_NEGATIVE = -1;
+const VOLUME = 0.3;
 class StillObject {
     constructor (x, y, w, h) {
         this.percentagePos = createVector(x/width, y/height);
@@ -70,6 +71,20 @@ class StillObject {
         );
     }
 
+    static soundPlaying (src) {
+        if (!src) {
+            src = Object.keys(this.sounds)[0];
+        }
+        return this.sounds[src].sound.isPlaying();
+    }
+
+    static playSound (src) {
+        if (!src) {
+            src = Object.keys(this.sounds)[0];
+        }
+        this.sounds[src].sound.play();
+    }
+
     static loadTextures () {
         let textures = this.textures
         Object.keys(textures).forEach(key => {
@@ -80,8 +95,12 @@ class StillObject {
     static loadSounds () {
         let sounds = this.sounds
         Object.keys(sounds).forEach(key => {
-            sounds[key] = loadSound(SND_DIR + key);
-            sounds[key].setVolume(VOLUME);
+            sounds[key].sound = loadSound(SND_DIR + key);
+            if (sounds[key].volume) {
+                sounds[key].sound.setVolume(sounds[key].volume);
+            } else {
+                sounds[key].sound.setVolume(VOLUME);
+            }
         });
     }
 }

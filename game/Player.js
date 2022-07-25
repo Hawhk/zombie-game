@@ -45,13 +45,13 @@ class Player extends MovingObject {
     }
 
     noAmmo () {
-        if (!Player.sounds['noAmmo.mp3'].isPlaying()) {
-            Player.sounds['noAmmo.mp3'].play();
+        if (!Player.soundPlaying()) {
+            Player.playSound('noAmmo.mp3');
         }
     }
 
     takeDamage(dmg) {
-        Player.sounds['oof.mp3'].play();
+        Player.playSound('oof.mp3');
         this.hp -= dmg;
     }
 
@@ -147,7 +147,7 @@ Player.textures = {
     'bullet.png':null
 };
 Player.sounds = {
-    'oof.mp3':null,
-    'heal.mp3':null,
-    'noAmmo.mp3':null,
+    'oof.mp3':{sound:null, volume:VOLUME * 3},
+    'heal.mp3':{sound:null},
+    'noAmmo.mp3':{sound:null},
 };

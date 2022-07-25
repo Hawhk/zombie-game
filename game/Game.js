@@ -16,10 +16,13 @@ class Game extends StillObject {
         this.nextRound();
 
         this.drops = [];
-        let s = 5;
+        let s = 60;
         this.dropTime = 1000 * s/this.nrOfZombies;
-        Ammo.game = this;
-        Ammo.setTimmer();
+        let drops = [Ammo];
+        dorps.forEach(drop => {
+            drop.game = this;
+            drop.setTimmer();
+        });
     }
 
     nextRound () {
@@ -34,7 +37,7 @@ class Game extends StillObject {
             let zS = random(0.05, 0.09);
             this.zombies.push(new Zombie(zX, zY, zS, i));
         }
-        Game.sounds['lvl.mp3'].play();
+        Game.playSound();
         this.nrOfZombies = nrOfZombies;
     }
 
@@ -111,13 +114,12 @@ class Game extends StillObject {
 
     static loadAllSounds () {
         this.loadSounds();
-        Game.sounds['lvl.mp3'].setVolume(VOLUME * 3);
         Player.loadSounds();
-        Player.sounds['oof.mp3'].setVolume(VOLUME * 3);
         // Zombie.loadSounds();
         Bullet.loadSounds();
         Ammo.loadSounds();
     }
 }
 Game.textures = {'game.png':null};
-Game.sounds = {'lvl.mp3':null};
+Game.sounds = {'lvl.mp3':{sound:null, volume:VOLUME*3}};
+console.log(Game.sounds);

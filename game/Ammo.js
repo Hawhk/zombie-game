@@ -10,13 +10,8 @@ class Ammo extends Drop {
     
     update () {
         this.show();
-        this.pickup();
+        this.pickup(Ammo);
     }
-
-    sound () {
-        Ammo.sounds['ammo.mp3'].play();
-    }
-
 }
 
 Ammo.timeMultipliers = {min:0.5, max:1.5};
@@ -24,5 +19,5 @@ Ammo.textures = {
     'ammo.png':null
 };
 Ammo.sounds = {
-    'ammo.mp3':null
+    'ammo.mp3':{sound:null, volume:VOLUME*2}
 };

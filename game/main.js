@@ -5,7 +5,6 @@ const FPS = 30;
 const ASSET_DIR = 'assets/';
 const PIC_DIR = ASSET_DIR + 'pic/';
 const SND_DIR = ASSET_DIR + 'sounds/';
-const VOLUME = 0.3;
 
 function preload(){
     Game.loadAllTextures();
