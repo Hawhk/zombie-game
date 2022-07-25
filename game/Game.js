@@ -19,7 +19,7 @@ class Game extends StillObject {
         let s = 60;
         this.dropTime = 1000 * s/this.nrOfZombies;
         let drops = [Ammo];
-        dorps.forEach(drop => {
+        drops.forEach(drop => {
             drop.game = this;
             drop.setTimmer();
         });
