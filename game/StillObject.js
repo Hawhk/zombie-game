@@ -9,31 +9,41 @@ class StillObject {
         this.imgDirV = 0;
     }
 
-    show () {
+    show (x, y) {
         let obj = this.constructor;
-        let img = obj.name.toLowerCase()+".png";
-        if(obj.textures[img] !== null) {
-            this.showImg();
+        let src = obj.name.toLowerCase()+".png";
+        if(obj.textures[src] !== null) {
+            this.showImg(src, x, y);
         } else {
             let {w, h} = this.getDim();
-            let {x, y} = this.getPos();
+            if (!x || !y) {
+                let {x:px, y:py} = this.getPos();
+                x = px;
+                y = py;
+            }
             fill('blue');
             rect(x, y, w, h);
         }
     }
 
-    showImg () {
+    showImg (src, x, y) {
         let {w, h} = this.getDim();
-        let {x, y} = this.getPos();
+        if (!x || !y) {
+            let {x:px, y:py} = this.getPos();
+            x = px;
+            y = py;
+        }
         let obj = this.constructor;
-        let img = obj.name.toLowerCase()+".png";
+        if (!src) {
+            src = obj.name.toLowerCase()+".png";
+        }
         if (this.imgDirH === IMG_NEGATIVE) {
             push();
             scale(-1, 1);
-            image(obj.textures[img], -x, y, w, h);
+            image(obj.textures[src], -x, y, w, h);
             pop();
         } else if (this.imgDirH === IMG_NORMAL) {
-            image(obj.textures[img], x, y, w, h);
+            image(obj.textures[src], x, y, w, h);
         }
         if (this.imgDirV === IMG_NEGATIVE || this.imgDirV === IMG_NORMAL) { 
             push();
@@ -42,7 +52,7 @@ class StillObject {
             } else {
                 this.rotate(x, y, 90);
             }
-            image(obj.textures[img], 0, 0, w, h);
+            image(obj.textures[src], 0, 0, w, h);
             pop();
         }
     }

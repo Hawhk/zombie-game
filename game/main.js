@@ -23,6 +23,7 @@ function setup() {
     angleMode(DEGREES);
 
     game = new Game();
+    fib(15);
 } 
 
 function draw() {

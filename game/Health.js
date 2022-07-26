@@ -5,7 +5,11 @@ class Health extends Drop {
         this.quantity = random([1,2]);
     }
     update () {
-        this.show();
+        let {x, y} = this.getPos();
+        let x2 = this.getDim().w/3;
+        for (let i = 0; i < this.quantity; i++) {
+            this.show(x + x2 * i, y);
+        }
         this.pickup(Health);
     }
 

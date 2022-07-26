@@ -115,7 +115,7 @@ class Game extends StillObject {
         } else {
             this.loseText();
             this.dropsAvailable.forEach(drop => {
-                drop.cleartimer();
+                drop.clearTimer();
             });
         }
     }
@@ -159,7 +159,7 @@ class Game extends StillObject {
     loseText () {
         push();
         fill("DARKRED");
-        textSize(width/20);
+        textSize(width/22);
         textStyle(BOLD);
         let {w} = this.getFireSize();
         w *= 4;
