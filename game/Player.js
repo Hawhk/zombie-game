@@ -35,6 +35,7 @@ class Player extends MovingObject {
             this.ammo--;
             let {x, y} = this.getPos();
             this.bullets.push(new Bullet(x, y, dirX, dirY));
+            this.knockback(10, createVector(-dirX, -dirY));
         } else {    
             this.noAmmo();
         }
