@@ -1,3 +1,2 @@
-- Add bomb
 - Create scoreboard server
 - Add scoreboard

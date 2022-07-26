@@ -16,7 +16,7 @@ class Game extends StillObject {
         this.paused = false;
 
         this.drops = [];
-        this.dropsAvailable = [Bomb] // Ammo, Health,;
+        this.dropsAvailable = [Ammo, Health, Bomb];
 
         this.dropsAvailable.forEach(drop => {
             drop.game = this;
