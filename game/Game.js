@@ -81,7 +81,9 @@ class Game extends StillObject {
     resume () {
         this.paused = false;
         this.dropsAvailable.forEach(drop => {
-            drop.timer.resume();
+            if (drop.timer) {
+                drop.timer.resume();
+            }
         });
         if (this.timer) {
             this.timer.resume();
@@ -105,7 +107,9 @@ class Game extends StillObject {
     pause() {
         this.paused = true;
         this.dropsAvailable.forEach(drop => {
-            drop.timer.pause();
+            if (drop.timer) {
+                drop.timer.pause();
+            }
         });
         if (this.timer) {
             this.timer.pause();
