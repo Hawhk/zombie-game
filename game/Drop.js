@@ -9,27 +9,33 @@ class Drop extends StillObject {
     pickup (object) {
         let game = this.constructor.game;
         let player = game.player;
-        let name = this.constructor.name;
         if (rectColide(
             this.getPos(), this.getDim(), 
             player.getPos(), player.getDim()
         )) {
             object.playSound();
-            //todo fix adding quantity
-            player[name.toLowerCase()] += this.quantity;
+            this.addQuantity(player);
             game.drops.splice(game.drops.indexOf(this), 1);
         }
+    }
+
+    addQuantity (player) {
+        let name = this.constructor.name;
+        player[name.toLowerCase()] += this.quantity;
     }
 
 
     static newDrop() {
         let {w, h} = this.getDimensions();
-        let {w:w1, h:h1} = this.percentageDimentions;
+        let {w:pdw, h:pdh} = this.percentageDimentions;
+        let {w:fw, h:fh} = this.game.getFireSize();
+        fw *= 2;
+        fh *= 2; 
         return new this(
-            random(this.game.getFireSize().w + w, width - this.game.getFireSize().w - w),
-            random(this.game.getFireSize().h + h, height - this.game.getFireSize().h - h),
-            w1,
-            h1,
+            random(fw + w, width - fw - w),
+            random(fh + h, height - fh - h),
+            pdw,
+            pdh,
             this.game.nrOfZombies
         );
     }
@@ -42,20 +48,22 @@ class Drop extends StillObject {
         };
     }
 
-    static setTimmer () {
+    static setTimer (time) {
         let mult = random(this.timeMultipliers.min, this.timeMultipliers.max);
-        let time = this.game.getDropTime() * mult;
-        console.log(time);
+        if (!time) {
+            time = this.game.getDropTime();
+        }
         this.timer = new Timer(() => {
-            console.log("hmm");
             this.game.drops.push(this.newDrop());
-            this.setTimmer();
-        }, time);
+            this.setTimer();
+        }, time * mult);
     }
 
-    static clearTimmer () {
-        this.timer.pause();
-        this.timer = null;
+    static clearTimer () {
+        if (this.timer) {
+            this.timer.pause();
+            this.timer = null;
+        }
     }
 }
 Drop.percentageDimentions = {w: 80, h: 80*RATIO}; 

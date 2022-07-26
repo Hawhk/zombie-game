@@ -1,9 +1,10 @@
 class Ammo extends Drop {
     constructor (x,y,w,h,nrOfZombies) {
-        super(x,y,w,h,nrOfZombies,0.5,1.5);
-        let min = 10;
-        if (this.quantity < min) {
-            this.quantity = min;
+        let {min, max} = Health.timeMultipliers;
+        super(x,y,w,h,nrOfZombies,min, max);
+        let minQuan = 20;
+        if (this.quantity < minQuan) {
+            this.quantity = minQuan;
         }
     }
     

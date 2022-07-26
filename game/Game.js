@@ -16,11 +16,12 @@ class Game extends StillObject {
         this.paused = false;
 
         this.drops = [];
-        this.dropsAvailable = [Ammo];
+        this.dropsAvailable = [Ammo, Health];
 
         this.dropsAvailable.forEach(drop => {
             drop.game = this;
-            drop.setTimmer();
+            let time = this.getDropTime();
+            drop.setTimer(random(time/2, time * 2));
         });
         this.timer = null;
         this.nextRound();
@@ -28,18 +29,8 @@ class Game extends StillObject {
 
     nextRound () {
         this.round++;
-        let nrOfZombies = fib(this.round);
-        let {w, h} = this.getFireSize();
-        w *= 2;
-        h *= 2;
-        for (let i = 0; i < nrOfZombies; i++) {
-            let zX = random(w, width - w);
-            let zY = random(h, height - h);
-            let zS = random(0.05, 0.09);
-            this.zombies.push(new Zombie(zX, zY, zS, i));
-        }
+        this.spawnZombies();
         Game.playSound();
-        this.nrOfZombies = nrOfZombies;
         this.addRandomDrop();
     }
 
@@ -55,9 +46,11 @@ class Game extends StillObject {
                     this.timer.resume();
                 }
             }
-            this.drops.forEach(drop => {
+
+            for(let i = this.drops.length - 1; i >= 0; i--) {
+                let drop = this.drops[i];
                 drop.update(this.player);
-            });
+            }
 
             this.player.update(this.getFireSize(), this.zombies);
             
@@ -93,9 +86,31 @@ class Game extends StillObject {
         } else {
             this.loseText();
             this.dropsAvailable.forEach(drop => {
-                drop.clearTimmer();
+                drop.cleartimer();
             });
         }
+    }
+
+    spawnZombies () {
+        let nrOfZombies = fib(this.round);
+        let {w, h} = this.getFireSize();
+        let {x, y} = this.player.getPos();
+        w *= 2;
+        h *= 2;
+        let minDist = width/10;
+        for (let i = 0; i < nrOfZombies; i++) {
+            let zX = random(w, width - w);
+            let zY = random(h, height - h);
+            let dist = createVector(zX - x, zY - y).mag();
+            while (dist < minDist) {
+                zX = random(w, width - w);
+                zY = random(h, height - h);
+                dist = createVector(zX - x, zY - y).mag();
+            }
+            let zS = random(0.05, 0.09);
+            this.zombies.push(new Zombie(zX, zY, zS, i));
+        }
+        this.nrOfZombies = nrOfZombies;
     }
 
     addRandomDrop () {
@@ -117,24 +132,31 @@ class Game extends StillObject {
         fill("DARKRED");
         textSize(width/20);
         textStyle(BOLD);
-        text(`You died with ${this.player.kills} kill(s) on round ${this.round}` , width/2, height/2);
+        let {w} = this.getFireSize();
+        w *= 4;
+        text(
+            `You died with ${this.player.kills} kill(s) on round ${this.round}`, 
+            width/2, height/2, width - w
+        );
         pop();
     }
 
     playerStats () {
         push();
-        textSize(22);
+        textSize(width/30);
         textStyle(BOLD);
         fill("Gold");
+        let y = height/20;
+        let x = width/20;
         if (this.player.ammo > 0) {
-            text(this.player.ammo, 30, height - 20);
+            text(this.player.ammo, x, height - y);
         } else {
-            text("No ammo", 50, height - 20);
+            text("No ammo", x * 1.5, height - y);
         }
         fill("red");
-        text(this.player.hp, 30, 30);
+        text(this.player.hp, x, y);
         fill(0);
-        text(this.round, width - 30, height - 20);
+        text(this.round, width - x, height - y);
         pop()
     }
 
@@ -160,6 +182,7 @@ class Game extends StillObject {
         Zombie.loadTextures();
         Bullet.loadTextures();
         Ammo.loadTextures();
+        Health.loadTextures();
     }
 
     static loadAllSounds () {
@@ -168,6 +191,7 @@ class Game extends StillObject {
         // Zombie.loadSounds();
         Bullet.loadSounds();
         Ammo.loadSounds();
+        Health.loadSounds();
     }
 }
 Game.textures = {'game.png':null};

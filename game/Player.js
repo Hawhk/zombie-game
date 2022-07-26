@@ -6,6 +6,7 @@ class Player extends MovingObject {
         super(px, py, w, h, 0, 0, s);
 
         this.hp = 10; // player health
+        this.maxHp = 10; // player max health
         this.ammo = 50; // player ammo
         this.kills = 0; // player kills
 
@@ -45,7 +46,7 @@ class Player extends MovingObject {
     }
 
     noAmmo () {
-        if (!Player.soundPlaying()) {
+        if (!Player.soundPlaying('noAmmo.mp3')) {
             Player.playSound('noAmmo.mp3');
         }
     }
@@ -147,6 +148,5 @@ Player.textures = {
 };
 Player.sounds = {
     'oof.mp3':{sound:null, volume:VOLUME * 3},
-    'heal.mp3':{sound:null},
     'noAmmo.mp3':{sound:null},
 };

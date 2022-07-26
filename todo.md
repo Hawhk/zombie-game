@@ -1,0 +1,4 @@
+- Add bomb
+- Add knock back on shot
+- Create scoreboard server
+- Add scoreboard
