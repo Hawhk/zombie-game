@@ -40,7 +40,6 @@ class Game extends StillObject {
             if (this.paused) {
                 this.resume();
             }
-            console.log('focused');
             for(let i = this.drops.length - 1; i >= 0; i--) {
                 let drop = this.drops[i];
                 drop.update(this.player);
@@ -68,7 +67,6 @@ class Game extends StillObject {
                 }, 5000);
             }
         } else if (!focused) {
-            console.log("Lost focus");
             if (!this.paused) {
                 this.pause();
             }
