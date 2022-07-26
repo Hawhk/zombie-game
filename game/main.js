@@ -1,8 +1,11 @@
 let game;
 
 const FPS = 30;
-
-const ASSET_DIR = 'assets/';
+let serverAsset;
+if (document.title !== 'zombie') {
+    serverAsset = "/static/zombie-game/assets";
+}
+const ASSET_DIR = serverAsset || 'assets/';
 const PIC_DIR = ASSET_DIR + 'pic/';
 const SND_DIR = ASSET_DIR + 'sounds/';
 
