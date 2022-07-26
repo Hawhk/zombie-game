@@ -11,10 +11,18 @@ class Player extends MovingObject {
         this.kills = 0; // player kills
 
         this.bullets = []; // player bullets
+        this.bombs = []; // player bombs
     }
 
     show () {
         this.showImg();
+    }
+
+    update (fire, zombies) {
+        this.checkFire(fire);
+        this.move();
+        this.checkBulltes(zombies);
+        this.checkBombs();
     }
 
     move () {
@@ -52,15 +60,31 @@ class Player extends MovingObject {
         }
     }
 
+    placeBomb () {
+        let len = this.bombs.length;
+        if (len > 0) {
+            let i = 0;
+            while (this.bombs[i].placed && i < len) {
+                i++;
+            }
+            if (i < len) {
+                this.bombs[i].placeBomb();
+            }
+        }
+    }
+
+    checkBombs () {
+        for (let i = this.bombs.length - 1; i >= 0; i--) {
+            let bomb = this.bombs[i];
+            if (bomb.placed) {
+                bomb.show();
+            }
+        }
+    }
+
     takeDamage(dmg) {
         Player.playSound('oof.mp3');
         this.hp -= dmg;
-    }
-
-    update (fire, zombies) {
-        this.checkFire(fire);
-        this.move();
-        this.checkBulltes(zombies);
     }
 
     checkBulltes (zombies) {

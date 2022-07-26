@@ -64,6 +64,10 @@ function keyPressed() {
     } else if (key === 'd') {
         game.player.shoot(1, 0); // right
     }
+
+    if (key === ' ') {
+        game.player.placeBomb();
+    }
   }
 
 function rectColide(r1Pos, r1Dim, r2Pos, r2Dim) {
@@ -93,4 +97,19 @@ function isRectColiding(rects) {
         }
     }
     return false;
+}
+
+function circleRectColide(cPos, cRad, rPos, rDim) {
+    let distX = abs(cPos.x - rPos.x);
+    let distY = abs(cPos.y - rPos.y);
+
+    if (distX > (rDim.w/2 + cRad)) { return false; }
+    if (distY > (rDim.h/2 + cRad)) { return false; }
+
+    if (distX <= (rDim.w/2)) { return true; }
+    if (distY <= (rDim.h/2)) { return true; }
+
+    let dx = distX - rDim.w/2;
+    let dy = distY - rDim.h/2;
+    return (dx*dx + dy*dy <= (cRad*cRad));
 }

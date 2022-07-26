@@ -16,7 +16,7 @@ class Game extends StillObject {
         this.paused = false;
 
         this.drops = [];
-        this.dropsAvailable = [Ammo, Health];
+        this.dropsAvailable = [Bomb] // Ammo, Health,;
 
         this.dropsAvailable.forEach(drop => {
             drop.game = this;
@@ -44,6 +44,20 @@ class Game extends StillObject {
                 });
                 if (this.timer) {
                     this.timer.resume();
+                }
+                let bombs = this.player.bombs;
+                for (let i = 0; i < bombs.length; i++) {
+                    let bomb = bombs[i];
+                    if (bomb.placed) {
+                        bomb.timer.resume();
+                        let timerSound = bomb.timerSound;
+                        if (timerSound.paused) {
+                            timerSound.sound.play();
+                            timerSound.paused = false;
+                        }
+                    } else {
+                        break;
+                    }
                 }
             }
 
@@ -82,6 +96,21 @@ class Game extends StillObject {
                 if (this.timer) {
                     this.timer.pause();
                 }
+                let bombs = this.player.bombs;
+                for (let i = 0; i < bombs.length; i++) {
+                    let bomb = bombs[i];
+                    if (bomb.placed) {
+                        bomb.timer.pause();
+                        let timerSound = bomb.timerSound;
+                        if (timerSound.sound.isPlaying()) {
+                            timerSound.sound.pause();
+                            timerSound.paused = true;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+                
             }
         } else {
             this.loseText();
@@ -153,6 +182,8 @@ class Game extends StillObject {
         } else {
             text("No ammo", x * 1.5, height - y);
         }
+        fill("navy")
+        text(this.player.bombs.length, width/2,  height - y);
         fill("red");
         text(this.player.hp, x, y);
         fill(0);
@@ -183,6 +214,7 @@ class Game extends StillObject {
         Bullet.loadTextures();
         Ammo.loadTextures();
         Health.loadTextures();
+        Bomb.loadTextures();
     }
 
     static loadAllSounds () {
@@ -192,6 +224,7 @@ class Game extends StillObject {
         Bullet.loadSounds();
         Ammo.loadSounds();
         Health.loadSounds();
+        Bomb.loadSounds();
     }
 }
 Game.textures = {'game.png':null};

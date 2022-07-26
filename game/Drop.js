@@ -6,14 +6,14 @@ class Drop extends StillObject {
         this.quantity = nrOfZombies * round(random(0.5,1.5));
     }
 
-    pickup (object) {
+    pickup (object, sound) {
         let game = this.constructor.game;
         let player = game.player;
         if (rectColide(
             this.getPos(), this.getDim(), 
             player.getPos(), player.getDim()
         )) {
-            object.playSound();
+            object.playSound(sound);
             this.addQuantity(player);
             game.drops.splice(game.drops.indexOf(this), 1);
         }
