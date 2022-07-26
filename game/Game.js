@@ -38,29 +38,9 @@ class Game extends StillObject {
         this.show();
         if (!this.lost && focused) {
             if (this.paused) {
-                this.paused = false;
-                this.dropsAvailable.forEach(drop => {
-                    drop.timer.resume();
-                });
-                if (this.timer) {
-                    this.timer.resume();
-                }
-                let bombs = this.player.bombs;
-                for (let i = 0; i < bombs.length; i++) {
-                    let bomb = bombs[i];
-                    if (bomb.placed) {
-                        bomb.timer.resume();
-                        let timerSound = bomb.timerSound;
-                        if (timerSound.paused) {
-                            timerSound.sound.play();
-                            timerSound.paused = false;
-                        }
-                    } else {
-                        break;
-                    }
-                }
+                this.resume();
             }
-
+            console.log('focused');
             for(let i = this.drops.length - 1; i >= 0; i--) {
                 let drop = this.drops[i];
                 drop.update(this.player);
@@ -88,35 +68,63 @@ class Game extends StillObject {
                 }, 5000);
             }
         } else if (!focused) {
+            console.log("Lost focus");
             if (!this.paused) {
-                this.paused = true;
-                this.dropsAvailable.forEach(drop => {
-                    drop.timer.pause();
-                });
-                if (this.timer) {
-                    this.timer.pause();
-                }
-                let bombs = this.player.bombs;
-                for (let i = 0; i < bombs.length; i++) {
-                    let bomb = bombs[i];
-                    if (bomb.placed) {
-                        bomb.timer.pause();
-                        let timerSound = bomb.timerSound;
-                        if (timerSound.sound.isPlaying()) {
-                            timerSound.sound.pause();
-                            timerSound.paused = true;
-                        }
-                    } else {
-                        break;
-                    }
-                }
-                
+                this.pause();
             }
         } else {
             this.loseText();
             this.dropsAvailable.forEach(drop => {
                 drop.clearTimer();
             });
+        }
+    }
+
+    resume () {
+        this.paused = false;
+        this.dropsAvailable.forEach(drop => {
+            drop.timer.resume();
+        });
+        if (this.timer) {
+            this.timer.resume();
+        }
+        let bombs = this.player.bombs;
+        for (let i = 0; i < bombs.length; i++) {
+            let bomb = bombs[i];
+            if (bomb.placed) {
+                bomb.timer.resume();
+                let timerSound = bomb.timerSound;
+                if (timerSound.paused) {
+                    timerSound.sound.play();
+                    timerSound.paused = false;
+                }
+            } else {
+                break;
+            }
+        }
+    }
+
+    pause() {
+        this.paused = true;
+        this.dropsAvailable.forEach(drop => {
+            drop.timer.pause();
+        });
+        if (this.timer) {
+            this.timer.pause();
+        }
+        let bombs = this.player.bombs;
+        for (let i = 0; i < bombs.length; i++) {
+            let bomb = bombs[i];
+            if (bomb.placed) {
+                bomb.timer.pause();
+                let timerSound = bomb.timerSound;
+                if (timerSound.sound.isPlaying()) {
+                    timerSound.sound.pause();
+                    timerSound.paused = true;
+                }
+            } else {
+                break;
+            }
         }
     }
 
