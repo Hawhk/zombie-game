@@ -41,9 +41,15 @@ function windowResized() {
 }
 
 function getSize() {
+    let nch = 0;
+    if (typeof getNonCanvasHeight === 'function') {
+        nch = getNonCanvasHeight();
+    } else {
+        nch = 25;
+    }
     let w = windowWidth;
-    let h = windowHeight - 25;
-    if (windowHeight - 25 < w * RATIO) {
+    let h = windowHeight - nch;
+    if (windowHeight - nch < w * RATIO) {
         w = h / RATIO;
     } else {
         h = w * RATIO;
