@@ -2,8 +2,10 @@ let game;
 
 const FPS = 30;
 let serverAsset;
+let isOnServer = false;
 if (document.title !== 'Zombie') {
-    serverAsset = "/static/zombie-game/assets/";
+    serverAsset = "/gamestatic/zombie-game/assets/";
+    isOnServer = true;
 }
 const ASSET_DIR = serverAsset || 'assets/';
 const PIC_DIR = ASSET_DIR + 'pic/';
