@@ -2,7 +2,7 @@ let game;
 
 const FPS = 30;
 let serverAsset;
-if (document.title !== 'zombie') {
+if (document.title !== 'Zombie') {
     serverAsset = "/static/zombie-game/assets/";
 }
 const ASSET_DIR = serverAsset || 'assets/';
