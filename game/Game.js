@@ -71,6 +71,7 @@ class Game extends StillObject {
                 this.pause();
             }
         } else {
+            this.pause();
             this.loseText();
             this.dropsAvailable.forEach(drop => {
                 drop.clearTimer();
